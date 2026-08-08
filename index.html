@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Clone - Gemma In-Browser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-[#131314] text-[#E3E3E3] h-screen flex flex-col font-sans">
 
+    <!-- Top Navigation / Model Selector -->
+    <header class="flex justify-between items-center px-6 py-4 border-b border-[#333538] bg-[#1E1F20]">
+        <div class="flex items-center space-x-3">
+            <span class="text-xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Gemini + Gemma</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <select id="modelSelect" class="bg-[#2B2D31] text-sm text-white px-3 py-2 rounded-lg border border-[#444746] focus:outline-none">
+                <option value="gemma-2b-it-q4f16_1-MLC">Gemma Lite (2B - Fast)</option>
+                <option value="gemma-4-E4B-it-litert-lm" selected>Gemma Flash (4B - Balanced)</option>
+                <option value="gemma-12b-it-q4f16_1-MLC">Gemma Pro (12B - Advanced)</option>
+            </select>
+            <button id="exportBtn" class="bg-[#333538] hover:bg-[#444746] text-xs px-3 py-2 rounded-lg transition">Export Chat</button>
+        </div>
+    </header>
+
+    <!-- Main Chat Container -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-4xl w-full mx-auto">
+        <div class="flex items-start space-x-4">
+            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center font-bold text-white">G</div>
+            <div class="bg-[#1E1F20] p-4 rounded-2xl max-w-[80%] border border-[#333538] text-sm">
+                System initialized. Select a Gemma tier above and type your prompt to begin local execution via WebGPU.
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Progress Bar -->
+    <div id="progressContainer" class="hidden px-6 py-2 bg-[#1E1F20] border-t border-[#333538] text-xs text-center text-gray-400">
+        Loading model weights into browser memory: <span id="progressText">0%</span>
+    </div>
+
+    <!-- Input Footer -->
+    <footer class="p-4 bg-[#1E1F20] border-t border-[#333538]">
+        <div class="max-w-4xl mx-auto flex items-center bg-[#2B2D31] rounded-2xl px-4 py-2 border border-[#444746]">
+            <textarea id="userInput" rows="1" placeholder="Enter a prompt here..." class="flex-1 bg-transparent text-white focus:outline-none resize-none max-h-32 text-sm"></textarea>
+            <button id="sendBtn" class="ml-3 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm transition">Send</button>
+        </div>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
