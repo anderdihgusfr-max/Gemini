@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini + Gemma Local</title>
+    <title>Gemma</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -31,7 +31,7 @@
                             </linearGradient>
                         </defs>
                     </svg>
-                    <span class="font-semibold text-sm tracking-wide text-white sidebar-text whitespace-nowrap">Gemini</span>
+                    <span class="font-semibold text-sm tracking-wide text-white sidebar-text whitespace-nowrap">Gemma</span>
                 </div>
                 <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-[#2B2D31] transition cursor-pointer shrink-0 sidebar-btn-collapse" title="Collapse sidebar">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -76,17 +76,13 @@
             <!-- Recent Chat History -->
             <div class="sidebar-text pt-2 sidebar-section-recent">
                 <div class="text-xs font-semibold text-gray-400 px-3 uppercase tracking-wider mb-1">Recent</div>
-                <div class="space-y-0.5 max-h-40 overflow-y-auto text-sm text-gray-300 pr-1">
-                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Build Gemini-like Gemma Website</div>
-                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Casual Greeting and Bro Banter</div>
-                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Recreating OnStar Voice</div>
-                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Generate Vintage Phone Operator Voice</div>
-                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Roblox Button Click Bug Fixes</div>
+                <div id="recentChatsList" class="space-y-0.5 max-h-40 overflow-y-auto text-sm text-gray-300 pr-1">
+                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">New conversation</div>
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar Footer -->
+        <!-- Sidebar Footer (Google Auth & User Info) -->
         <div class="p-3 border-t border-[#333538] flex flex-col space-y-2 sidebar-footer-area">
             <div class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-[#2B2D31] text-sm text-gray-300 cursor-pointer transition overflow-hidden">
                 <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -97,13 +93,9 @@
                 <span class="sidebar-text whitespace-nowrap">Settings</span>
             </div>
 
-            <!-- User Info (Gusts Grigale / Latvia) -->
-            <div class="flex items-center space-x-3 px-2 py-2 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition overflow-hidden">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 to-purple-500 flex items-center justify-center font-bold text-white text-xs shrink-0">GG</div>
-                <div class="flex flex-col sidebar-text truncate">
-                    <span class="text-sm font-medium text-white truncate">Gusts Grigale</span>
-                    <span class="text-[11px] text-gray-400 truncate">Latvia · From your device</span>
-                </div>
+            <!-- Dynamic User / Google Sign-In Footer Container -->
+            <div id="userFooterContainer" class="w-full">
+                <!-- Populated via JS -->
             </div>
         </div>
     </aside>
@@ -123,7 +115,7 @@
         <!-- Chat Workspace -->
         <div id="workspace" class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-3xl w-full mx-auto flex flex-col justify-center items-center">
             <div id="welcomeScreen" class="text-center space-y-4">
-                <h1 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">What's the vibe, Gusts?</h1>
+                <h1 id="welcomeGreeting" class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Hello, new user!</h1>
             </div>
             <div id="chatMessages" class="w-full space-y-6 hidden"></div>
         </div>
@@ -209,7 +201,7 @@
             <div class="bg-[#1E1F20] rounded-3xl px-4 py-3 border border-[#333538] flex items-center justify-between shadow-lg">
                 <div class="flex items-center space-x-3 flex-1">
                     <button onclick="togglePlusDropdown(event)" class="text-gray-400 hover:text-white text-xl font-light px-1 transition cursor-pointer">+</button>
-                    <textarea id="userInput" rows="1" placeholder="Ask Gemini" class="bg-transparent text-white focus:outline-none resize-none text-sm w-full max-h-32"></textarea>
+                    <textarea id="userInput" rows="1" placeholder="Ask Gemma" class="bg-transparent text-white focus:outline-none resize-none text-sm w-full max-h-32"></textarea>
                 </div>
 
                 <div class="flex items-center space-x-3">
@@ -230,14 +222,9 @@
             </div>
 
             <div class="text-center text-[11px] text-gray-500 mt-2.5">
-                Gemini is AI and can make mistakes, including about people. <span class="underline cursor-pointer">Your privacy and Gemini</span>
+                Gemma is AI and can make mistakes, including about people. <span class="underline cursor-pointer">Your privacy and Gemma</span>
             </div>
         </footer>
-    </div>
-
-    <!-- Toast Notification Element -->
-    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#2B2D31] text-white text-xs px-4 py-2 rounded-full shadow-2xl opacity-0 pointer-events-none transition-opacity duration-300 z-50">
-        Copied to clipboard
     </div>
 
     <script>
@@ -246,6 +233,7 @@
         const sidebarToggleBtn = document.getElementById("sidebarToggleBtn");
         const workspace = document.getElementById("workspace");
         const welcomeScreen = document.getElementById("welcomeScreen");
+        const welcomeGreeting = document.getElementById("welcomeGreeting");
         const chatMessages = document.getElementById("chatMessages");
         const userInput = document.getElementById("userInput");
         const modelDropdown = document.getElementById("modelDropdown");
@@ -253,7 +241,7 @@
         const currentModelLabel = document.getElementById("currentModelLabel");
         const sendBtn = document.getElementById("sendBtn");
         const sendIcon = document.getElementById("sendIcon");
-        const toast = document.getElementById("toast");
+        const userFooterContainer = document.getElementById("userFooterContainer");
 
         let messages = [];
         let selectedModel = "gemma4:e2b";
@@ -261,16 +249,103 @@
         let isGenerating = false;
         let abortController = null;
         let sidebarOpen = true;
+        let userIp = "127.0.0.1";
+        let googleUser = null;
 
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.remove("opacity-0");
-            toast.classList.add("opacity-100");
-            setTimeout(() => {
-                toast.classList.remove("opacity-100");
-                toast.classList.add("opacity-0");
-            }, 2000);
+        // Initialize User Session & IP
+        async function initUserSession() {
+            try {
+                const res = await fetch("https://api.ipify.org?format=json");
+                const data = await res.json();
+                userIp = data.ip;
+            } catch (err) {
+                userIp = "local-ip-session";
+            }
+
+            // Check if there is saved Google session or chat data for this IP
+            const savedSession = localStorage.getItem(`gemma_session_${userIp}`);
+            if (savedSession) {
+                const parsed = JSON.parse(savedSession);
+                googleUser = parsed.googleUser;
+                messages = parsed.messages || [];
+
+                if (messages.length > 0) {
+                    welcomeScreen.classList.add("hidden");
+                    chatMessages.classList.remove("hidden");
+                    workspace.classList.remove("justify-center");
+                    chatMessages.innerHTML = "";
+                    messages.forEach(m => {
+                        if (m.role === "user") {
+                            appendUserMessage(m.content);
+                        } else {
+                            const container = appendAssistantMessageContainer();
+                            container.bubble.innerHTML = marked.parse(m.content);
+                            container.actions.classList.remove("hidden");
+                        }
+                    });
+                }
+            }
+
+            renderUserFooter();
         }
+
+        function saveSessionData() {
+            const data = {
+                googleUser: googleUser,
+                messages: messages
+            };
+            localStorage.setItem(`gemma_session_${userIp}`, JSON.stringify(data));
+        }
+
+        function renderUserFooter() {
+            if (googleUser) {
+                userFooterContainer.innerHTML = `
+                    <div class="flex items-center justify-between px-2 py-2 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition overflow-hidden">
+                        <div class="flex items-center space-x-3 truncate">
+                            <img src="${googleUser.picture}" class="w-8 h-8 rounded-full shrink-0" alt="Avatar">
+                            <div class="flex flex-col sidebar-text truncate">
+                                <span class="text-sm font-medium text-white truncate">${googleUser.name}</span>
+                                <span class="text-[11px] text-gray-400 truncate">${googleUser.email}</span>
+                            </div>
+                        </div>
+                        <button onclick="handleGoogleSignOut()" class="text-gray-400 hover:text-white text-xs sidebar-text p-1" title="Sign Out">Out</button>
+                    </div>
+                `;
+                welcomeGreeting.textContent = `Welcome back, ${googleUser.name.split(" ")[0]}!`;
+            } else {
+                userFooterContainer.innerHTML = `
+                    <button onclick="handleGoogleSignIn()" class="flex items-center justify-center space-x-2 w-full bg-white hover:bg-gray-100 text-black py-2.5 px-3 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md overflow-hidden">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.21 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.5-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.12 0 9.8 0 12s.43 3.88 1.18 5.39l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.21 0 3.15 2.68 1.18 6.61l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+                        <span class="sidebar-text whitespace-nowrap">Sign in with Google</span>
+                    </button>
+                `;
+                welcomeGreeting.textContent = `Hello, new user! What's on your mind?`;
+            }
+        }
+
+        // Simulate Google OAuth / Login popup flow tied to IP
+        function handleGoogleSignIn() {
+            const name = prompt("Simulate Google Sign-In: Enter your name", "Gusts Grigale");
+            if (!name) return;
+            const email = prompt("Enter your Google email", "gusts@gmail.com") || "user@gmail.com";
+            
+            googleUser = {
+                name: name,
+                email: email,
+                picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + encodeURIComponent(name)
+            };
+
+            saveSessionData();
+            renderUserFooter();
+        }
+
+        function handleGoogleSignOut() {
+            googleUser = null;
+            saveSessionData();
+            renderUserFooter();
+        }
+
+        initUserSession();
 
         function toggleSidebar() {
             sidebarOpen = !sidebarOpen;
@@ -296,6 +371,7 @@
             chatMessages.classList.add("hidden");
             welcomeScreen.classList.remove("hidden");
             workspace.classList.add("justify-center");
+            saveSessionData();
         }
 
         userInput.addEventListener("input", () => {
@@ -422,6 +498,7 @@
 
             messages.push({ role: "user", content: text });
             appendUserMessage(text);
+            saveSessionData();
 
             const botContainer = appendAssistantMessageContainer();
             const botBubble = botContainer.bubble;
@@ -480,6 +557,7 @@
                     }
                 }
                 messages.push({ role: "assistant", content: fullText });
+                saveSessionData();
                 botContainer.actions.classList.remove("hidden");
             } catch (err) {
                 thinkWrapper.classList.add("hidden");
@@ -510,7 +588,7 @@
 
             const title = document.createElement("div");
             title.className = "text-xs font-medium text-gray-400 flex items-center space-x-1.5";
-            title.innerHTML = `<span>Gemini +</span>`;
+            title.innerHTML = `<span>Gemma +</span>`;
             wrapper.appendChild(title);
 
             const thinkWrapper = document.createElement("div");
@@ -530,7 +608,7 @@
             actions.innerHTML = `
                 <button onclick="alert('Liked')" class="hover:text-white transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg></button>
                 <button onclick="alert('Disliked')" class="hover:text-white transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"/></svg></button>
-                <button onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.innerText); showToast('Copied to clipboard');" class="hover:text-white transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button>
+                <button onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.innerText)" class="hover:text-white transition" title="Copy"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button>
                 <button onclick="alert('Redo')" class="hover:text-white transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
             `;
             wrapper.appendChild(actions);
