@@ -12,141 +12,233 @@
         ::-webkit-scrollbar-thumb { background: #333538; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-[#131314] text-[#E3E3E3] h-screen flex flex-col justify-between font-sans overflow-hidden">
+<body class="bg-[#131314] text-[#E3E3E3] h-screen flex flex-row overflow-hidden font-sans">
 
-    <!-- Top Navigation / Header -->
-    <header class="flex justify-between items-center px-6 py-4 bg-transparent">
-        <div class="flex items-center space-x-2.5">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="url(#gemini-gradient)"/>
-                <defs>
-                    <linearGradient id="gemini-gradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#4285F4"/>
-                        <stop offset="40%" stop-color="#9B72CB"/>
-                        <stop offset="100%" stop-color="#EA4335"/>
-                    </linearGradient>
-                </defs>
-            </svg>
-            <span class="font-semibold text-sm tracking-wide text-white">Gemini +</span>
-        </div>
-    </header>
+    <!-- Collapsible Sidebar Component -->
+    <aside id="sidebar" class="w-72 bg-[#1E1F20] border-r border-[#333538] flex flex-col justify-between transition-all duration-300 z-40 select-none">
+        
+        <!-- Sidebar Top -->
+        <div class="p-3 flex flex-col space-y-4">
+            <div class="flex items-center justify-between px-2 py-1">
+                <div class="flex items-center space-x-2.5 overflow-hidden">
+                    <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="url(#gemini-gradient-side)"/>
+                        <defs>
+                            <linearGradient id="gemini-gradient-side" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#4285F4"/>
+                                <stop offset="40%" stop-color="#9B72CB"/>
+                                <stop offset="100%" stop-color="#EA4335"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="font-semibold text-sm tracking-wide text-white sidebar-text whitespace-nowrap">Gemini</span>
+                </div>
+                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-[#2B2D31] transition cursor-pointer shrink-0" title="Collapse sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
 
-    <!-- Chat Workspace -->
-    <div id="workspace" class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-3xl w-full mx-auto flex flex-col justify-center items-center">
-        <div id="welcomeScreen" class="text-center space-y-4">
-            <h1 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">What's the vibe, Gusts?</h1>
+            <!-- New Chat Button -->
+            <button onclick="startNewChat()" class="flex items-center space-x-3 bg-[#2B2D31] hover:bg-[#37393e] text-gray-200 px-3.5 py-3 rounded-full text-sm font-medium transition cursor-pointer w-full overflow-hidden">
+                <span class="text-lg leading-none shrink-0">+</span>
+                <span class="sidebar-text whitespace-nowrap">New chat</span>
+            </button>
+
+            <!-- Navigation Links -->
+            <div class="flex flex-col space-y-0.5 text-sm text-gray-300 pt-2">
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-[#2B2D31] transition overflow-hidden">
+                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <span class="sidebar-text whitespace-nowrap">Search chats</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-[#2B2D31] transition overflow-hidden">
+                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span class="sidebar-text whitespace-nowrap">Images</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-[#2B2D31] transition overflow-hidden">
+                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    <span class="sidebar-text whitespace-nowrap">Videos</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-[#2B2D31] transition overflow-hidden">
+                    <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    <span class="sidebar-text whitespace-nowrap">Library</span>
+                </a>
+            </div>
+
+            <!-- Notebooks Section -->
+            <div class="pt-2 sidebar-text">
+                <div class="text-xs font-semibold text-gray-400 px-3 uppercase tracking-wider mb-1">Notebooks</div>
+                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-[#2B2D31] text-sm text-gray-300 transition">
+                    <span class="text-lg leading-none">+</span>
+                    <span>New notebook</span>
+                </a>
+            </div>
+
+            <!-- Recent Chat History -->
+            <div class="sidebar-text pt-2">
+                <div class="text-xs font-semibold text-gray-400 px-3 uppercase tracking-wider mb-1">Recent</div>
+                <div class="space-y-0.5 max-h-40 overflow-y-auto text-sm text-gray-300 pr-1">
+                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Build Gemini-like Gemma Website</div>
+                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Casual Greeting and Bro Banter</div>
+                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Recreating OnStar Voice</div>
+                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Generate Vintage Phone Operator Voice</div>
+                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">Roblox Button Click Bug Fixes</div>
+                </div>
+            </div>
         </div>
-        <div id="chatMessages" class="w-full space-y-6 hidden"></div>
+
+        <!-- Sidebar Footer -->
+        <div class="p-3 border-t border-[#333538] flex flex-col space-y-2">
+            <div class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-[#2B2D31] text-sm text-gray-300 cursor-pointer transition overflow-hidden">
+                <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="sidebar-text whitespace-nowrap">Activity</span>
+            </div>
+            <div class="flex items-center space-x-3 px-3 py-2 rounded-xl hover:bg-[#2B2D31] text-sm text-gray-300 cursor-pointer transition overflow-hidden">
+                <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span class="sidebar-text whitespace-nowrap">Settings</span>
+            </div>
+
+            <!-- User Info (Gusts Grigale / Latvia) -->
+            <div class="flex items-center space-x-3 px-2 py-2 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition overflow-hidden">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 to-purple-500 flex items-center justify-center font-bold text-white text-xs shrink-0">GG</div>
+                <div class="flex flex-col sidebar-text truncate">
+                    <span class="text-sm font-medium text-white truncate">Gusts Grigale</span>
+                    <span class="text-[11px] text-gray-400 truncate">Latvia · From your device</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content App Area -->
+    <div class="flex-1 flex flex-col justify-between h-screen overflow-hidden">
+
+        <!-- Top Header Bar -->
+        <header class="flex justify-between items-center px-6 py-4 bg-transparent">
+            <div class="flex items-center space-x-3">
+                <button id="sidebarToggleBtn" onclick="toggleSidebar()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-[#2B2D31] transition cursor-pointer hidden" title="Open sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <span class="font-semibold text-sm tracking-wide text-white">Gemini +</span>
+            </div>
+        </header>
+
+        <!-- Chat Workspace -->
+        <div id="workspace" class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-3xl w-full mx-auto flex flex-col justify-center items-center">
+            <div id="welcomeScreen" class="text-center space-y-4">
+                <h1 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">What's the vibe, Gusts?</h1>
+            </div>
+            <div id="chatMessages" class="w-full space-y-6 hidden"></div>
+        </div>
+
+        <!-- Input Footer Bar -->
+        <footer class="p-6 max-w-3xl w-full mx-auto relative">
+            
+            <!-- Plus (+) Attachment Popup Menu -->
+            <div id="plusDropdown" class="hidden absolute bottom-24 left-6 w-64 bg-[#1E1F20] border border-[#333538] rounded-2xl shadow-2xl p-2 z-50 flex flex-col space-y-1 text-sm text-gray-200">
+                <label class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                    <span>Upload files</span>
+                    <input type="file" class="hidden" onchange="handleFileUpload(event)">
+                </label>
+                <div onclick="alert('Drive integration selected')" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                    <span>Add from Drive</span>
+                </div>
+                <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
+                        <span>More uploads</span>
+                    </div>
+                    <span class="text-xs text-gray-400">&gt;</span>
+                </div>
+                <div class="border-t border-[#333538] my-1"></div>
+                <div onclick="alert('Canvas activated')" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Canvas</span>
+                </div>
+                <div onclick="alert('Guided Learning activated')" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    <span>Guided Learning</span>
+                </div>
+            </div>
+
+            <!-- Custom Model Dropdown Popup Menu -->
+            <div id="modelDropdown" class="hidden absolute bottom-24 right-6 w-72 bg-[#1E1F20] border border-[#333538] rounded-2xl shadow-2xl p-2 z-50 flex flex-col space-y-1">
+                <div id="box-gemma4:e2b" onclick="selectModel('gemma4:e2b', '3.5 Flash-Lite')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-white cursor-pointer transition">
+                    <div class="flex items-center space-x-3">
+                        <span id="check-gemma4:e2b" class="text-white text-sm">✓</span>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-medium text-white">3.5 Flash-Lite</span>
+                            <span class="text-xs text-gray-400">Fastest answers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="box-gemma4:e4b" onclick="selectModel('gemma4:e4b', '3.6 Flash')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
+                    <div class="flex items-center space-x-3">
+                        <span id="check-gemma4:e4b" class="text-transparent text-sm">✓</span>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-medium text-gray-300">3.6 Flash</span>
+                            <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="box-gemma4:12b" onclick="selectModel('gemma4:12b', '3.1 Pro')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
+                    <div class="flex items-center space-x-3">
+                        <span id="check-gemma4:12b" class="text-transparent text-sm">✓</span>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-medium text-gray-300">3.1 Pro</span>
+                            <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-[#333538] my-1"></div>
+
+                <div onclick="toggleThinking()" class="flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
+                    <div class="flex items-center space-x-3">
+                        <span id="thinkingCheck" class="text-white text-sm">✓</span>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-medium text-white">Extended thinking</span>
+                            <span class="text-xs text-gray-400">Complex problem solving</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Box Container -->
+            <div class="bg-[#1E1F20] rounded-3xl px-4 py-3 border border-[#333538] flex items-center justify-between shadow-lg">
+                <div class="flex items-center space-x-3 flex-1">
+                    <button onclick="togglePlusDropdown(event)" class="text-gray-400 hover:text-white text-xl font-light px-1 transition cursor-pointer">+</button>
+                    <textarea id="userInput" rows="1" placeholder="Ask Gemini" class="bg-transparent text-white focus:outline-none resize-none text-sm w-full max-h-32"></textarea>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <button id="modelBadgeBtn" onclick="toggleModelDropdown(event)" class="flex items-center space-x-1.5 bg-[#2B2D31] hover:bg-[#37393e] text-xs text-gray-300 px-3 py-1.5 rounded-full border border-[#444746] transition cursor-pointer">
+                        <span id="currentModelLabel">Flash-Lite Extended</span>
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+
+                    <button class="text-gray-400 hover:text-white transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                    </button>
+
+                    <!-- Send / Stop Button -->
+                    <button id="sendBtn" onclick="handleSendBtnClick()" class="bg-[#2B2D31] text-gray-400 p-2.5 rounded-full transition cursor-pointer flex items-center justify-center">
+                        <svg id="sendIcon" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center text-[11px] text-gray-500 mt-2.5">
+                Gemini is AI and can make mistakes, including about people. <span class="underline cursor-pointer">Your privacy and Gemini</span>
+            </div>
+        </footer>
     </div>
 
-    <!-- Input Footer Bar -->
-    <footer class="p-6 max-w-3xl w-full mx-auto relative">
-        
-        <!-- Plus (+) Attachment Popup Menu -->
-        <div id="plusDropdown" class="hidden absolute bottom-24 left-6 w-64 bg-[#1E1F20] border border-[#333538] rounded-2xl shadow-2xl p-2 z-50 flex flex-col space-y-1 text-sm text-gray-200">
-            <label class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                <span>Upload files</span>
-                <input type="file" class="hidden" onchange="handleFileUpload(event)">
-            </label>
-            <div onclick="alert('Drive integration selected')" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-                <span>Add from Drive</span>
-            </div>
-            <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <div class="flex items-center space-x-3">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
-                    <span>More uploads</span>
-                </div>
-                <span class="text-xs text-gray-400">&gt;</span>
-            </div>
-            <div class="border-t border-[#333538] my-1"></div>
-            <div onclick="alert('Canvas activated')" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                <span>Canvas</span>
-            </div>
-            <div onclick="alert('Guided Learning activated')" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                <span>Guided Learning</span>
-            </div>
-        </div>
-
-        <!-- Custom Model Dropdown Popup Menu -->
-        <div id="modelDropdown" class="hidden absolute bottom-24 right-6 w-72 bg-[#1E1F20] border border-[#333538] rounded-2xl shadow-2xl p-2 z-50 flex flex-col space-y-1">
-            
-            <div id="box-gemma4:e2b" onclick="selectModel('gemma4:e2b', '3.5 Flash-Lite')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-white cursor-pointer transition">
-                <div class="flex items-center space-x-3">
-                    <span id="check-gemma4:e2b" class="text-white text-sm">✓</span>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-medium text-white">3.5 Flash-Lite</span>
-                        <span class="text-xs text-gray-400">Fastest answers</span>
-                    </div>
-                </div>
-            </div>
-
-            <div id="box-gemma4:e4b" onclick="selectModel('gemma4:e4b', '3.6 Flash')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
-                <div class="flex items-center space-x-3">
-                    <span id="check-gemma4:e4b" class="text-transparent text-sm">✓</span>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-medium text-gray-300">3.6 Flash</span>
-                        <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
-                    </div>
-                </div>
-            </div>
-
-            <div id="box-gemma4:12b" onclick="selectModel('gemma4:12b', '3.1 Pro')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
-                <div class="flex items-center space-x-3">
-                    <span id="check-gemma4:12b" class="text-transparent text-sm">✓</span>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-medium text-gray-300">3.1 Pro</span>
-                        <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="border-t border-[#333538] my-1"></div>
-
-            <div onclick="toggleThinking()" class="flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
-                <div class="flex items-center space-x-3">
-                    <span id="thinkingCheck" class="text-white text-sm">✓</span>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-medium text-white">Extended thinking</span>
-                        <span class="text-xs text-gray-400">Complex problem solving</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Input Box Container -->
-        <div class="bg-[#1E1F20] rounded-3xl px-4 py-3 border border-[#333538] flex items-center justify-between shadow-lg">
-            <div class="flex items-center space-x-3 flex-1">
-                <button onclick="togglePlusDropdown(event)" class="text-gray-400 hover:text-white text-xl font-light px-1 transition cursor-pointer">+</button>
-                <textarea id="userInput" rows="1" placeholder="Ask Gemini" class="bg-transparent text-white focus:outline-none resize-none text-sm w-full max-h-32"></textarea>
-            </div>
-
-            <div class="flex items-center space-x-3">
-                <button id="modelBadgeBtn" onclick="toggleModelDropdown(event)" class="flex items-center space-x-1.5 bg-[#2B2D31] hover:bg-[#37393e] text-xs text-gray-300 px-3 py-1.5 rounded-full border border-[#444746] transition cursor-pointer">
-                    <span id="currentModelLabel">Flash-Lite Extended</span>
-                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </button>
-
-                <button class="text-gray-400 hover:text-white transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-                </button>
-
-                <!-- Send / Stop Button -->
-                <button id="sendBtn" onclick="handleSendBtnClick()" class="bg-[#2B2D31] text-gray-400 p-2.5 rounded-full transition cursor-pointer flex items-center justify-center">
-                    <svg id="sendIcon" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <div class="text-center text-[11px] text-gray-500 mt-2.5">
-            Gemini is AI and can make mistakes, including about people. <span class="underline cursor-pointer">Your privacy and Gemini</span>
-        </div>
-    </footer>
-
     <script>
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggleBtn = document.getElementById("sidebarToggleBtn");
         const workspace = document.getElementById("workspace");
         const welcomeScreen = document.getElementById("welcomeScreen");
         const chatMessages = document.getElementById("chatMessages");
@@ -162,6 +254,31 @@
         let extendedThinkingEnabled = true;
         let isGenerating = false;
         let abortController = null;
+        let sidebarOpen = true;
+
+        function toggleSidebar() {
+            sidebarOpen = !sidebarOpen;
+            const textElements = document.querySelectorAll('.sidebar-text');
+            if (sidebarOpen) {
+                sidebar.classList.remove("w-16");
+                sidebar.classList.add("w-72");
+                textElements.forEach(el => el.classList.remove("hidden"));
+                sidebarToggleBtn.classList.add("hidden");
+            } else {
+                sidebar.classList.remove("w-72");
+                sidebar.classList.add("w-16");
+                textElements.forEach(el => el.classList.add("hidden"));
+                sidebarToggleBtn.classList.remove("hidden");
+            }
+        }
+
+        function startNewChat() {
+            messages = [];
+            chatMessages.innerHTML = "";
+            chatMessages.classList.add("hidden");
+            welcomeScreen.classList.remove("hidden");
+            workspace.classList.add("justify-center");
+        }
 
         userInput.addEventListener("input", () => {
             if (isGenerating) return;
@@ -198,7 +315,8 @@
 
         function selectModel(modelKey, labelName) {
             selectedModel = modelKey;
-            currentModelLabel.textContent = labelName + " Extended";
+            const suffix = extendedThinkingEnabled ? " Extended" : "";
+            currentModelLabel.textContent = labelName + suffix;
             
             const models = ['gemma4:e2b', 'gemma4:e4b', 'gemma4:12b'];
             models.forEach(m => {
@@ -228,6 +346,9 @@
                 check.classList.remove("text-white");
                 check.classList.add("text-transparent");
             }
+            // Update badge label suffix
+            const currentText = currentModelLabel.textContent.replace(" Extended", "");
+            currentModelLabel.textContent = currentText + (extendedThinkingEnabled ? " Extended" : "");
         }
 
         function handleFileUpload(e) {
@@ -317,9 +438,9 @@
                 let fullText = "";
 
                 if (extendedThinkingEnabled) {
-                    await new Promise(r => setTimeout(r, 800));
+                    await new Promise(r => setTimeout(r, 700));
                     thinkStatus.textContent = "Analyzing context & reasoning";
-                    await new Promise(r => setTimeout(r, 800));
+                    await new Promise(r => setTimeout(r, 700));
                 }
 
                 thinkWrapper.classList.add("hidden");
@@ -376,7 +497,6 @@
             title.innerHTML = `<span>Gemini +</span>`;
             wrapper.appendChild(title);
 
-            // Gemini Sparkle Thinking Header matching exact screenshot style
             const thinkWrapper = document.createElement("div");
             thinkWrapper.className = "flex items-center space-x-2 text-gray-400 text-sm my-1 hidden animate-pulse";
             thinkWrapper.innerHTML = `
