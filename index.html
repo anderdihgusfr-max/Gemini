@@ -61,18 +61,6 @@
                 <span class="text-xs text-gray-400">&gt;</span>
             </div>
             <div class="border-t border-[#333538] my-1"></div>
-            <div class="flex items-center space-x-3 p-2.5 rounded-xl text-gray-500 cursor-not-allowed">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <span>Create image</span>
-            </div>
-            <div class="flex items-center space-x-3 p-2.5 rounded-xl text-gray-500 cursor-not-allowed">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                <span>Create video</span>
-            </div>
-            <div class="flex items-center space-x-3 p-2.5 rounded-xl text-gray-500 cursor-not-allowed">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
-                <span>Create music</span>
-            </div>
             <div onclick="alert('Canvas activated')" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 <span>Canvas</span>
@@ -83,41 +71,49 @@
             </div>
         </div>
 
-        <!-- Custom Model Dropdown Popup Menu matching video frame 00:04 -->
+        <!-- Custom Model Dropdown Popup Menu -->
         <div id="modelDropdown" class="hidden absolute bottom-24 right-6 w-72 bg-[#1E1F20] border border-[#333538] rounded-2xl shadow-2xl p-2 z-50 flex flex-col space-y-1">
             
-            <div onclick="selectModel('gemma4:e2b', '3.5 Flash-Lite')" class="model-option flex items-center justify-between p-3 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium text-white">3.5 Flash-Lite</span>
-                    <span class="text-xs text-gray-400">Fastest answers</span>
+            <div id="box-gemma4:e2b" onclick="selectModel('gemma4:e2b', '3.5 Flash-Lite')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-white cursor-pointer transition">
+                <div class="flex items-center space-x-3">
+                    <span id="check-gemma4:e2b" class="text-white text-sm">✓</span>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-white">3.5 Flash-Lite</span>
+                        <span class="text-xs text-gray-400">Fastest answers</span>
+                    </div>
                 </div>
-                <span id="check-gemma4:e2b" class="text-white text-sm">✓</span>
             </div>
 
-            <div onclick="selectModel('gemma4:e4b', '3.6 Flash')" class="model-option flex items-center justify-between p-3 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium text-gray-300">3.6 Flash</span>
-                    <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
+            <div id="box-gemma4:e4b" onclick="selectModel('gemma4:e4b', '3.6 Flash')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
+                <div class="flex items-center space-x-3">
+                    <span id="check-gemma4:e4b" class="text-transparent text-sm">✓</span>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-300">3.6 Flash</span>
+                        <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
+                    </div>
                 </div>
-                <span id="check-gemma4:e4b" class="text-transparent text-sm">✓</span>
             </div>
 
-            <div onclick="selectModel('gemma4:12b', '3.1 Pro')" class="model-option flex items-center justify-between p-3 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium text-gray-300">3.1 Pro</span>
-                    <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
+            <div id="box-gemma4:12b" onclick="selectModel('gemma4:12b', '3.1 Pro')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
+                <div class="flex items-center space-x-3">
+                    <span id="check-gemma4:12b" class="text-transparent text-sm">✓</span>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-300">3.1 Pro</span>
+                        <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
+                    </div>
                 </div>
-                <span id="check-gemma4:12b" class="text-transparent text-sm">✓</span>
             </div>
 
             <div class="border-t border-[#333538] my-1"></div>
 
-            <div onclick="toggleThinking()" class="flex items-center justify-between p-3 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium text-white">Extended thinking</span>
-                    <span class="text-xs text-gray-400">Complex problem solving</span>
+            <div onclick="toggleThinking()" class="flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
+                <div class="flex items-center space-x-3">
+                    <span id="thinkingCheck" class="text-white text-sm">✓</span>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-white">Extended thinking</span>
+                        <span class="text-xs text-gray-400">Complex problem solving</span>
+                    </div>
                 </div>
-                <span id="thinkingCheck" class="text-white text-sm">✓</span>
             </div>
         </div>
 
@@ -138,8 +134,9 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
                 </button>
 
-                <button id="sendBtn" onclick="handleSend()" class="bg-[#2B2D31] hover:bg-white hover:text-black text-gray-400 p-2 rounded-full transition cursor-pointer">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <!-- Send / Stop Button -->
+                <button id="sendBtn" onclick="handleSendBtnClick()" class="bg-[#2B2D31] text-gray-400 p-2.5 rounded-full transition cursor-pointer flex items-center justify-center">
+                    <svg id="sendIcon" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </button>
             </div>
         </div>
@@ -157,10 +154,30 @@
         const modelDropdown = document.getElementById("modelDropdown");
         const plusDropdown = document.getElementById("plusDropdown");
         const currentModelLabel = document.getElementById("currentModelLabel");
+        const sendBtn = document.getElementById("sendBtn");
+        const sendIcon = document.getElementById("sendIcon");
 
         let messages = [];
         let selectedModel = "gemma4:e2b";
         let extendedThinkingEnabled = true;
+        let isGenerating = false;
+        let abortController = null;
+
+        userInput.addEventListener("input", () => {
+            if (isGenerating) return;
+            const hasText = userInput.value.trim().length > 0;
+            if (hasText) {
+                sendBtn.classList.remove("bg-[#2B2D31]", "text-gray-400");
+                sendBtn.classList.add("bg-[#A8C7FA]", "text-black");
+                sendIcon.classList.remove("text-gray-400");
+                sendIcon.classList.add("text-black");
+            } else {
+                sendBtn.classList.remove("bg-[#A8C7FA]", "text-black");
+                sendBtn.classList.add("bg-[#2B2D31]", "text-gray-400");
+                sendIcon.classList.remove("text-black");
+                sendIcon.classList.add("text-gray-400");
+            }
+        });
 
         function toggleModelDropdown(e) {
             e.stopPropagation();
@@ -182,12 +199,23 @@
         function selectModel(modelKey, labelName) {
             selectedModel = modelKey;
             currentModelLabel.textContent = labelName + " Extended";
-            document.querySelectorAll('[id^="check-gemma"]').forEach(el => {
-                el.classList.add("text-transparent");
-                el.classList.remove("text-white");
+            
+            const models = ['gemma4:e2b', 'gemma4:e4b', 'gemma4:12b'];
+            models.forEach(m => {
+                const box = document.getElementById(`box-${m}`);
+                const chk = document.getElementById(`check-${m}`);
+                if (m === modelKey) {
+                    box.classList.add('border-white');
+                    box.classList.remove('border-transparent');
+                    chk.classList.remove('text-transparent');
+                    chk.classList.add('text-white');
+                } else {
+                    box.classList.remove('border-white');
+                    box.classList.add('border-transparent');
+                    chk.classList.add('text-transparent');
+                    chk.classList.remove('text-white');
+                }
             });
-            document.getElementById(`check-${modelKey}`).classList.remove("text-transparent");
-            document.getElementById(`check-${modelKey}`).classList.add("text-white");
         }
 
         function toggleThinking() {
@@ -207,14 +235,46 @@
             if (file) {
                 userInput.value = `[Attached File: ${file.name}] `;
                 plusDropdown.classList.add("hidden");
+                userInput.dispatchEvent(new Event('input'));
             }
+        }
+
+        function handleSendBtnClick() {
+            if (isGenerating) {
+                if (abortController) {
+                    abortController.abort();
+                }
+                stopGeneratingState();
+            } else {
+                handleSend();
+            }
+        }
+
+        function startGeneratingState() {
+            isGenerating = true;
+            sendBtn.classList.add("bg-white", "text-black");
+            sendBtn.classList.remove("text-gray-400", "bg-[#2B2D31]", "bg-[#A8C7FA]");
+            sendIcon.outerHTML = '<div id="sendIcon" class="w-2.5 h-2.5 bg-black rounded-sm"></div>';
+        }
+
+        function stopGeneratingState() {
+            isGenerating = false;
+            abortController = null;
+            sendBtn.classList.remove("bg-white", "text-black");
+            sendBtn.classList.add("text-gray-400", "bg-[#2B2D31]");
+            const currentIcon = document.getElementById("sendIcon");
+            if (currentIcon) {
+                currentIcon.outerHTML = '<svg id="sendIcon" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>';
+            }
+            userInput.dispatchEvent(new Event('input'));
         }
 
         async function handleSend() {
             const text = userInput.value.trim();
-            if (!text) return;
+            if (!text || isGenerating) return;
 
             userInput.value = "";
+            userInput.dispatchEvent(new Event('input'));
             
             if (!welcomeScreen.classList.contains("hidden")) {
                 welcomeScreen.classList.add("hidden");
@@ -222,17 +282,22 @@
                 workspace.classList.remove("justify-center");
             }
 
-            let promptText = text;
-            if (extendedThinkingEnabled) {
-                promptText = "[Extended Thinking Mode Active: Think step-by-step] " + text;
-            }
-
             messages.push({ role: "user", content: text });
             appendUserMessage(text);
 
             const botContainer = appendAssistantMessageContainer();
             const botBubble = botContainer.bubble;
+            const thinkWrapper = botContainer.thinkWrapper;
+            const thinkStatus = botContainer.thinkStatus;
+
+            if (extendedThinkingEnabled) {
+                thinkWrapper.classList.remove("hidden");
+                thinkStatus.textContent = "Considering the User Request";
+            }
             
+            startGeneratingState();
+            abortController = new AbortController();
+
             try {
                 const response = await fetch("http://localhost:11434/api/chat", {
                     method: "POST",
@@ -241,7 +306,8 @@
                         model: selectedModel,
                         messages: messages.map(m => ({ role: m.role, content: m.content })),
                         stream: true
-                    })
+                    }),
+                    signal: abortController.signal
                 });
 
                 if (!response.ok) throw new Error("Failed to connect to local Ollama server.");
@@ -249,6 +315,14 @@
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 let fullText = "";
+
+                if (extendedThinkingEnabled) {
+                    await new Promise(r => setTimeout(r, 800));
+                    thinkStatus.textContent = "Analyzing context & reasoning";
+                    await new Promise(r => setTimeout(r, 800));
+                }
+
+                thinkWrapper.classList.add("hidden");
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -271,7 +345,14 @@
                 messages.push({ role: "assistant", content: fullText });
                 botContainer.actions.classList.remove("hidden");
             } catch (err) {
-                botBubble.innerHTML = `<span class="text-red-400">Error: Ensure Ollama is running with CORS enabled (${err.message}).</span>`;
+                thinkWrapper.classList.add("hidden");
+                if (err.name !== "AbortError") {
+                    botBubble.innerHTML = `<span class="text-red-400">Error: Ensure Ollama is running with CORS enabled (${err.message}).</span>`;
+                } else {
+                    botBubble.innerHTML += `<br><span class="text-yellow-400 text-xs">[Generation stopped by user]</span>`;
+                }
+            } finally {
+                stopGeneratingState();
             }
         }
 
@@ -290,17 +371,24 @@
             const wrapper = document.createElement("div");
             wrapper.className = "flex flex-col space-y-2 w-full justify-start";
 
-            // Title label matching video frame 00:16 ("Gemini +")
             const title = document.createElement("div");
             title.className = "text-xs font-medium text-gray-400 flex items-center space-x-1.5";
             title.innerHTML = `<span>Gemini +</span>`;
             wrapper.appendChild(title);
 
+            // Gemini Sparkle Thinking Header matching exact screenshot style
+            const thinkWrapper = document.createElement("div");
+            thinkWrapper.className = "flex items-center space-x-2 text-gray-400 text-sm my-1 hidden animate-pulse";
+            thinkWrapper.innerHTML = `
+                <span>✨</span>
+                <span id="thinkStatus">Considering the User Request</span>
+            `;
+            wrapper.appendChild(thinkWrapper);
+
             const bubble = document.createElement("div");
             bubble.className = "text-sm leading-relaxed text-gray-200";
             wrapper.appendChild(bubble);
 
-            // Action bar underneath matching video frame 00:17
             const actions = document.createElement("div");
             actions.className = "flex items-center space-x-3 text-gray-400 text-xs pt-1 hidden";
             actions.innerHTML = `
@@ -313,13 +401,18 @@
 
             chatMessages.appendChild(wrapper);
             workspace.scrollTop = workspace.scrollHeight;
-            return { bubble, actions };
+            return { 
+                bubble, 
+                actions, 
+                thinkWrapper, 
+                thinkStatus: thinkWrapper.querySelector("#thinkStatus") 
+            };
         }
 
         userInput.addEventListener("keydown", (e) => {
             if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                handleSend();
+                handleSendBtnClick();
             }
         });
     </script>
