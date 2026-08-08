@@ -3,50 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Clone - Gemma In-Browser</title>
+    <title>Gemini</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333538; border-radius: 4px; }
+    </style>
 </head>
-<body class="bg-[#131314] text-[#E3E3E3] h-screen flex flex-col font-sans">
+<body class="bg-[#131314] text-[#E3E3E3] h-screen flex font-sans overflow-hidden">
 
-    <!-- Top Navigation / Model Selector -->
-    <header class="flex justify-between items-center px-6 py-4 border-b border-[#333538] bg-[#1E1F20]">
-        <div class="flex items-center space-x-3">
-            <span class="text-xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Gemini + Gemma</span>
-        </div>
-        <div class="flex items-center space-x-4">
-            <select id="modelSelect" class="bg-[#2B2D31] text-sm text-white px-3 py-2 rounded-lg border border-[#444746] focus:outline-none">
-                <option value="gemma-2b-it-q4f16_1-MLC">Gemma Lite (2B - Fast)</option>
-                <option value="gemma-4-E4B-it-litert-lm" selected>Gemma Flash (4B - Balanced)</option>
-                <option value="gemma-12b-it-q4f16_1-MLC">Gemma Pro (12B - Advanced)</option>
-            </select>
-            <button id="exportBtn" class="bg-[#333538] hover:bg-[#444746] text-xs px-3 py-2 rounded-lg transition">Export Chat</button>
-        </div>
-    </header>
-
-    <!-- Main Chat Container -->
-    <main id="chatContainer" class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-4xl w-full mx-auto">
-        <div class="flex items-start space-x-4">
-            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center font-bold text-white">G</div>
-            <div class="bg-[#1E1F20] p-4 rounded-2xl max-w-[80%] border border-[#333538] text-sm">
-                System initialized. Select a Gemma tier above and type your prompt to begin local execution via WebGPU.
+    <!-- Left Sidebar -->
+    <aside class="w-64 bg-[#1E1F20] flex flex-col justify-between border-r border-[#333538] select-none">
+        <div class="p-4 flex flex-col space-y-4">
+            <div class="flex items-center space-x-3 px-2">
+                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                <span class="font-medium text-sm tracking-wide">Gemini</span>
+            </div>
+            <button onclick="newChat()" class="flex items-center space-x-3 bg-[#2B2D31] hover:bg-[#37393e] text-xs font-medium px-4 py-3 rounded-full transition w-full text-left">
+                <span class="text-lg leading-none">+</span>
+                <span>New chat</span>
+            </button>
+            <div class="text-xs text-gray-400 px-2 pt-2">Recent</div>
+            <div id="chatHistory" class="space-y-1 overflow-y-auto max-h-[calc(100vh-250px)] text-xs">
+                <div class="px-3 py-2 rounded-lg bg-[#282a2c] text-white truncate cursor-pointer">Build Gemini-like Gemma Website</div>
             </div>
         </div>
+
+        <!-- User Profile Footer -->
+        <div class="p-4 border-t border-[#333538] flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center font-bold text-white text-xs">GG</div>
+                <div class="flex flex-col">
+                    <span class="text-xs font-medium text-white">Gusts Grigale</span>
+                    <span class="text-[10px] text-gray-400">Latvia</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col justify-between relative overflow-hidden">
+        
+        <!-- Top Nav -->
+        <header class="flex justify-between items-center px-6 py-4">
+            <span class="text-sm font-medium text-gray-400">Model: Ollama Local Engine</span>
+            <div class="flex items-center space-x-3">
+                <button class="bg-[#1E1F20] hover:bg-[#2B2D31] text-xs px-3 py-1.5 rounded-full border border-[#333538] flex items-center space-x-1.5 transition">
+                    <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                    <span>Upgrade</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Workspace -->
+        <div id="workspace" class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-3xl w-full mx-auto flex flex-col justify-center items-center">
+            <div id="welcomeScreen" class="text-center space-y-4">
+                <h1 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">What's next, Gusts?</h1>
+            </div>
+            <div id="chatMessages" class="w-full space-y-6 hidden"></div>
+        </div>
+
+        <!-- Input Footer Bar -->
+        <footer class="p-6 max-w-3xl w-full mx-auto">
+            <div class="bg-[#1E1F20] rounded-3xl p-3 border border-[#333538] flex flex-col space-y-2 shadow-lg">
+                <textarea id="userInput" rows="1" placeholder="Ask Gemini..." class="bg-transparent text-white focus:outline-none resize-none px-3 text-sm max-h-32"></textarea>
+                
+                <div class="flex justify-between items-center px-2 pt-1">
+                    <!-- Model Tier Dropdown Switcher -->
+                    <div class="flex items-center space-x-2">
+                        <select id="modelSelect" class="bg-[#2B2D31] text-xs text-gray-200 px-3 py-1.5 rounded-xl border border-[#444746] focus:outline-none cursor-pointer">
+                            <option value="gemma4:e2b">Flash-Lite Extended (2B)</option>
+                            <option value="gemma4:e4b" selected>Flash Extended (4B)</option>
+                            <option value="gemma4:12b">Pro Extended (12B)</option>
+                        </select>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center space-x-2">
+                        <button id="sendBtn" class="bg-white hover:bg-gray-200 text-black p-2 rounded-full transition disabled:opacity-40">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </main>
 
-    <!-- Loading Progress Bar -->
-    <div id="progressContainer" class="hidden px-6 py-2 bg-[#1E1F20] border-t border-[#333538] text-xs text-center text-gray-400">
-        Loading model weights into browser memory: <span id="progressText">0%</span>
-    </div>
+    <script>
+        const workspace = document.getElementById("workspace");
+        const welcomeScreen = document.getElementById("welcomeScreen");
+        const chatMessages = document.getElementById("chatMessages");
+        const userInput = document.getElementById("userInput");
+        const sendBtn = document.getElementById("sendBtn");
+        const modelSelect = document.getElementById("modelSelect");
 
-    <!-- Input Footer -->
-    <footer class="p-4 bg-[#1E1F20] border-t border-[#333538]">
-        <div class="max-w-4xl mx-auto flex items-center bg-[#2B2D31] rounded-2xl px-4 py-2 border border-[#444746]">
-            <textarea id="userInput" rows="1" placeholder="Enter a prompt here..." class="flex-1 bg-transparent text-white focus:outline-none resize-none max-h-32 text-sm"></textarea>
-            <button id="sendBtn" class="ml-3 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm transition">Send</button>
-        </div>
-    </footer>
+        let messages = [];
 
-    <script type="module" src="app.js"></script>
+        function newChat() {
+            messages = [];
+            chatMessages.innerHTML = "";
+            chatMessages.classList.add("hidden");
+            welcomeScreen.classList.remove("hidden");
+            workspace.classList.add("justify-center");
+        }
+
+        async function handleSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // Clear input box
+            userInput.value = "";
+            
+            // Switch layout state from welcome to active chat feed
+            if (welcomeScreen.classList.contains("hidden") === false) {
+                welcomeScreen.classList.add("hidden");
+                chatMessages.classList.remove("hidden");
+                workspace.classList.remove("justify-center");
+            }
+
+            messages.push({ role: "user", content: text });
+            appendMessage("user", text);
+
+            const botBubble = appendMessage("assistant", "");
+            
+            try {
+                const response = await fetch("http://localhost:11434/api/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model: modelSelect.value,
+                        messages: messages,
+                        stream: true
+                    })
+                });
+
+                if (!response.ok) throw new Error("Failed to connect to local Ollama server.");
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullText = "";
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value, { stream: true });
+                    const lines = chunk.split("\n");
+
+                    for (const line of lines) {
+                        if (line.trim() !== "") {
+                            const parsed = JSON.parse(line);
+                            if (parsed.message && parsed.message.content) {
+                                fullText += parsed.message.content;
+                                botBubble.innerHTML = marked.parse(fullText);
+                                workspace.scrollTop = workspace.scrollHeight;
+                            }
+                        }
+                    }
+                }
+                messages.push({ role: "assistant", content: fullText });
+            } catch (err) {
+                botBubble.innerHTML = `<span class="text-red-400">Error: Ensure Ollama is running and CORS is active (${err.message}).</span>`;
+            }
+        }
+
+        function appendMessage(role, text) {
+            const isUser = role === "user";
+            const row = document.createElement("div");
+            row.className = `flex w-full space-x-4 ${isUser ? "justify-end" : "justify-start"}`;
+
+            const bubble = document.createElement("div");
+            bubble.className = `p-4 rounded-2xl max-w-[85%] text-sm leading-relaxed ${isUser ? "bg-[#2B2D31] text-white" : "bg-transparent text-gray-200"}`;
+            
+            if (text) bubble.innerHTML = marked.parse(text);
+
+            row.appendChild(bubble);
+            chatMessages.appendChild(row);
+            workspace.scrollTop = workspace.scrollHeight;
+            return bubble;
+        }
+
+        sendBtn.addEventListener("click", handleSend);
+        userInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+    </script>
 </body>
 </html>
