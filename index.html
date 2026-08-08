@@ -6,6 +6,7 @@
     <title>Gemma</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -77,7 +78,7 @@
             <div class="sidebar-text pt-2 sidebar-section-recent">
                 <div class="text-xs font-semibold text-gray-400 px-3 uppercase tracking-wider mb-1">Recent</div>
                 <div id="recentChatsList" class="space-y-0.5 max-h-40 overflow-y-auto text-sm text-gray-300 pr-1">
-                    <div class="px-3 py-2 rounded-xl hover:bg-[#2B2D31] truncate cursor-pointer transition">New conversation</div>
+                    <div class="px-3 py-2 text-gray-500 italic text-xs">No recent conversations</div>
                 </div>
             </div>
         </div>
@@ -154,22 +155,22 @@
 
             <!-- Custom Model Dropdown Popup Menu -->
             <div id="modelDropdown" class="hidden absolute bottom-24 right-6 w-72 bg-[#1E1F20] border border-[#333538] rounded-2xl shadow-2xl p-2 z-50 flex flex-col space-y-1">
-                <div id="box-gemma4:e2b" onclick="selectModel('gemma4:e2b', '3.5 Flash-Lite')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-white cursor-pointer transition">
+                <div id="box-gemma4:e2b" onclick="selectModel('gemma4:e2b', '3.5 Flash-Lite')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
                     <div class="flex items-center space-x-3">
-                        <span id="check-gemma4:e2b" class="text-white text-sm">✓</span>
+                        <span id="check-gemma4:e2b" class="text-transparent text-sm">✓</span>
                         <div class="flex flex-col">
-                            <span class="text-sm font-medium text-white">3.5 Flash-Lite</span>
-                            <span class="text-xs text-gray-400">Fastest answers</span>
+                            <span class="text-sm font-medium text-gray-300">3.5 Flash-Lite</span>
+                            <span class="text-xs text-gray-500">Fastest answers</span>
                         </div>
                     </div>
                 </div>
 
-                <div id="box-gemma4:e4b" onclick="selectModel('gemma4:e4b', '3.6 Flash')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
+                <div id="box-gemma4:e4b" onclick="selectModel('gemma4:e4b', '3.6 Flash')" class="model-option flex items-center justify-between p-3 rounded-2xl border border-white cursor-pointer transition">
                     <div class="flex items-center space-x-3">
-                        <span id="check-gemma4:e4b" class="text-transparent text-sm">✓</span>
+                        <span id="check-gemma4:e4b" class="text-white text-sm">✓</span>
                         <div class="flex flex-col">
-                            <span class="text-sm font-medium text-gray-300">3.6 Flash</span>
-                            <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
+                            <span class="text-sm font-medium text-white">3.6 Flash</span>
+                            <span class="text-xs text-gray-400">Limit resets 9 Aug, 00:16</span>
                         </div>
                     </div>
                 </div>
@@ -188,10 +189,10 @@
 
                 <div onclick="toggleThinking()" class="flex items-center justify-between p-3 rounded-2xl border border-transparent hover:bg-[#2B2D31] cursor-pointer transition">
                     <div class="flex items-center space-x-3">
-                        <span id="thinkingCheck" class="text-white text-sm">✓</span>
+                        <span id="thinkingCheck" class="text-transparent text-sm">✓</span>
                         <div class="flex flex-col">
-                            <span class="text-sm font-medium text-white">Extended thinking</span>
-                            <span class="text-xs text-gray-400">Complex problem solving</span>
+                            <span class="text-sm font-medium text-gray-300">Extended thinking</span>
+                            <span class="text-xs text-gray-500">Complex problem solving</span>
                         </div>
                     </div>
                 </div>
@@ -206,7 +207,7 @@
 
                 <div class="flex items-center space-x-3">
                     <button id="modelBadgeBtn" onclick="toggleModelDropdown(event)" class="flex items-center space-x-1.5 bg-[#2B2D31] hover:bg-[#37393e] text-xs text-gray-300 px-3 py-1.5 rounded-full border border-[#444746] transition cursor-pointer">
-                        <span id="currentModelLabel">Flash-Lite Extended</span>
+                        <span id="currentModelLabel">3.6 Flash</span>
                         <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
 
@@ -242,17 +243,21 @@
         const sendBtn = document.getElementById("sendBtn");
         const sendIcon = document.getElementById("sendIcon");
         const userFooterContainer = document.getElementById("userFooterContainer");
+        const recentChatsList = document.getElementById("recentChatsList");
 
-        let messages = [];
-        let selectedModel = "gemma4:e2b";
-        let extendedThinkingEnabled = true;
+        let userIp = "127.0.0.1";
+        let googleUser = null;
+        let chats = []; 
+        let currentChatId = null;
+
+        // Default model set to Flash (3.6 Flash) with extended thinking disabled by default
+        let selectedModel = "gemma4:e4b";
+        let extendedThinkingEnabled = false;
         let isGenerating = false;
         let abortController = null;
         let sidebarOpen = true;
-        let userIp = "127.0.0.1";
-        let googleUser = null;
 
-        // Initialize User Session & IP
+        // Initialize User Session, IP, and saved conversations
         async function initUserSession() {
             try {
                 const res = await fetch("https://api.ipify.org?format=json");
@@ -262,39 +267,62 @@
                 userIp = "local-ip-session";
             }
 
-            // Check if there is saved Google session or chat data for this IP
-            const savedSession = localStorage.getItem(`gemma_session_${userIp}`);
-            if (savedSession) {
-                const parsed = JSON.parse(savedSession);
-                googleUser = parsed.googleUser;
-                messages = parsed.messages || [];
-
-                if (messages.length > 0) {
-                    welcomeScreen.classList.add("hidden");
-                    chatMessages.classList.remove("hidden");
-                    workspace.classList.remove("justify-center");
-                    chatMessages.innerHTML = "";
-                    messages.forEach(m => {
-                        if (m.role === "user") {
-                            appendUserMessage(m.content);
-                        } else {
-                            const container = appendAssistantMessageContainer();
-                            container.bubble.innerHTML = marked.parse(m.content);
-                            container.actions.classList.remove("hidden");
-                        }
-                    });
-                }
+            const savedData = localStorage.getItem(`gemma_data_${userIp}`);
+            if (savedData) {
+                const parsed = JSON.parse(savedData);
+                googleUser = parsed.googleUser || null;
+                chats = parsed.chats || [];
             }
 
             renderUserFooter();
+            renderRecentChats();
+            initGoogleAuth();
         }
 
-        function saveSessionData() {
+        function saveData() {
             const data = {
                 googleUser: googleUser,
-                messages: messages
+                chats: chats
             };
-            localStorage.setItem(`gemma_session_${userIp}`, JSON.stringify(data));
+            localStorage.setItem(`gemma_data_${userIp}`, JSON.stringify(data));
+        }
+
+        function handleCredentialResponse(response) {
+            const responsePayload = decodeJwtResponse(response.credential);
+            googleUser = {
+                name: responsePayload.name,
+                email: responsePayload.email,
+                picture: responsePayload.picture
+            };
+            saveData();
+            renderUserFooter();
+        }
+
+        function decodeJwtResponse(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        function initGoogleAuth() {
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+                    callback: handleCredentialResponse
+                });
+                if (!googleUser) {
+                    const btnContainer = document.getElementById("googleButtonDiv");
+                    if (btnContainer) {
+                        google.accounts.id.renderButton(
+                            btnContainer,
+                            { theme: "outline", size: "large", width: "250" }
+                        );
+                    }
+                }
+            }
         }
 
         function renderUserFooter() {
@@ -314,35 +342,62 @@
                 welcomeGreeting.textContent = `Welcome back, ${googleUser.name.split(" ")[0]}!`;
             } else {
                 userFooterContainer.innerHTML = `
-                    <button onclick="handleGoogleSignIn()" class="flex items-center justify-center space-x-2 w-full bg-white hover:bg-gray-100 text-black py-2.5 px-3 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md overflow-hidden">
-                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.15 21.32 7.21 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.5-.38-2.24s.13-1.52.38-2.24V6.61H1.18C.43 8.12 0 9.8 0 12s.43 3.88 1.18 5.39l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.21 0 3.15 2.68 1.18 6.61l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
-                        <span class="sidebar-text whitespace-nowrap">Sign in with Google</span>
-                    </button>
+                    <div id="googleButtonDiv" class="w-full flex justify-center overflow-hidden"></div>
                 `;
+                setTimeout(() => initGoogleAuth(), 100);
                 welcomeGreeting.textContent = `Hello, new user! What's on your mind?`;
             }
         }
 
-        // Simulate Google OAuth / Login popup flow tied to IP
-        function handleGoogleSignIn() {
-            const name = prompt("Simulate Google Sign-In: Enter your name", "Gusts Grigale");
-            if (!name) return;
-            const email = prompt("Enter your Google email", "gusts@gmail.com") || "user@gmail.com";
-            
-            googleUser = {
-                name: name,
-                email: email,
-                picture: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + encodeURIComponent(name)
-            };
-
-            saveSessionData();
+        function handleGoogleSignOut() {
+            googleUser = null;
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.disableAutoSelect();
+            }
+            saveData();
             renderUserFooter();
         }
 
-        function handleGoogleSignOut() {
-            googleUser = null;
-            saveSessionData();
-            renderUserFooter();
+        function renderRecentChats() {
+            recentChatsList.innerHTML = "";
+            if (chats.length === 0) {
+                recentChatsList.innerHTML = `<div class="px-3 py-2 text-gray-500 italic text-xs">No recent conversations</div>`;
+                return;
+            }
+            chats.forEach(chat => {
+                const item = document.createElement("div");
+                item.className = `px-3 py-2 rounded-xl truncate cursor-pointer transition ${chat.id === currentChatId ? 'bg-[#2B2D31] text-white font-medium' : 'hover:bg-[#2B2D31] text-gray-300'}`;
+                item.textContent = chat.title;
+                item.onclick = () => loadChat(chat.id);
+                recentChatsList.appendChild(item);
+            });
+        }
+
+        function loadChat(chatId) {
+            const chat = chats.find(c => c.id === chatId);
+            if (!chat) return;
+
+            currentChatId = chatId;
+            chatMessages.innerHTML = "";
+            
+            if (chat.messages.length > 0) {
+                welcomeScreen.classList.add("hidden");
+                chatMessages.classList.remove("hidden");
+                workspace.classList.remove("justify-center");
+
+                chat.messages.forEach(m => {
+                    if (m.role === "user") {
+                        appendUserMessageElement(m.content);
+                    } else {
+                        const container = appendAssistantMessageContainer();
+                        container.bubble.innerHTML = marked.parse(m.content);
+                        container.actions.classList.remove("hidden");
+                    }
+                });
+            } else {
+                startNewChat();
+            }
+            renderRecentChats();
         }
 
         initUserSession();
@@ -366,12 +421,12 @@
         }
 
         function startNewChat() {
-            messages = [];
+            currentChatId = null;
             chatMessages.innerHTML = "";
             chatMessages.classList.add("hidden");
             welcomeScreen.classList.remove("hidden");
             workspace.classList.add("justify-center");
-            saveSessionData();
+            renderRecentChats();
         }
 
         userInput.addEventListener("input", () => {
@@ -440,8 +495,11 @@
                 check.classList.remove("text-white");
                 check.classList.add("text-transparent");
             }
-            const currentText = currentModelLabel.textContent.replace(" Extended", "");
-            currentModelLabel.textContent = currentText + (extendedThinkingEnabled ? " Extended" : "");
+            const activeModelEl = document.querySelector('.model-option.border-white');
+            let baseName = "3.6 Flash";
+            if (selectedModel === 'gemma4:e2b') baseName = "3.5 Flash-Lite";
+            if (selectedModel === 'gemma4:12b') baseName = "3.1 Pro";
+            currentModelLabel.textContent = baseName + (extendedThinkingEnabled ? " Extended" : "");
         }
 
         function handleFileUpload(e) {
@@ -496,9 +554,21 @@
                 workspace.classList.remove("justify-center");
             }
 
-            messages.push({ role: "user", content: text });
-            appendUserMessage(text);
-            saveSessionData();
+            let currentChat = chats.find(c => c.id === currentChatId);
+            if (!currentChat) {
+                currentChatId = 'chat_' + Date.now();
+                currentChat = {
+                    id: currentChatId,
+                    title: text.length > 28 ? text.substring(0, 28) + '...' : text,
+                    messages: []
+                };
+                chats.unshift(currentChat);
+            }
+
+            currentChat.messages.push({ role: "user", content: text });
+            appendUserMessageElement(text);
+            saveData();
+            renderRecentChats();
 
             const botContainer = appendAssistantMessageContainer();
             const botBubble = botContainer.bubble;
@@ -524,7 +594,7 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         model: selectedModel,
-                        messages: messages.map(m => ({ role: m.role, content: m.content })),
+                        messages: currentChat.messages.map(m => ({ role: m.role, content: m.content })),
                         stream: true
                     }),
                     signal: abortController.signal
@@ -556,8 +626,8 @@
                         }
                     }
                 }
-                messages.push({ role: "assistant", content: fullText });
-                saveSessionData();
+                currentChat.messages.push({ role: "assistant", content: fullText });
+                saveData();
                 botContainer.actions.classList.remove("hidden");
             } catch (err) {
                 thinkWrapper.classList.add("hidden");
@@ -571,7 +641,7 @@
             }
         }
 
-        function appendUserMessage(text) {
+        function appendUserMessageElement(text) {
             const row = document.createElement("div");
             row.className = "flex w-full justify-end";
             const bubble = document.createElement("div");
