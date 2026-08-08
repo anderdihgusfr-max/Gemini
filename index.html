@@ -48,7 +48,7 @@
         
         <!-- Top Nav -->
         <header class="flex justify-between items-center px-6 py-4">
-            <span class="text-sm font-medium text-gray-400">Model: Ollama Local Engine</span>
+            <span class="text-sm font-medium text-gray-400">Ollama Local Engine Active</span>
             <div class="flex items-center space-x-3">
                 <button class="bg-[#1E1F20] hover:bg-[#2B2D31] text-xs px-3 py-1.5 rounded-full border border-[#333538] flex items-center space-x-1.5 transition">
                     <span class="w-2 h-2 rounded-full bg-blue-400"></span>
@@ -66,26 +66,70 @@
         </div>
 
         <!-- Input Footer Bar -->
-        <footer class="p-6 max-w-3xl w-full mx-auto">
-            <div class="bg-[#1E1F20] rounded-3xl p-3 border border-[#333538] flex flex-col space-y-2 shadow-lg">
-                <textarea id="userInput" rows="1" placeholder="Ask Gemini..." class="bg-transparent text-white focus:outline-none resize-none px-3 text-sm max-h-32"></textarea>
+        <footer class="p-6 max-w-3xl w-full mx-auto relative">
+            
+            <!-- Custom Model Dropdown Popup Menu -->
+            <div id="modelDropdown" class="hidden absolute bottom-24 left-6 w-80 bg-[#1E1F20] border border-[#333538] rounded-2xl shadow-2xl p-2 z-50 flex flex-col space-y-1">
                 
-                <div class="flex justify-between items-center px-2 pt-1">
-                    <!-- Model Tier Dropdown Switcher -->
-                    <div class="flex items-center space-x-2">
-                        <select id="modelSelect" class="bg-[#2B2D31] text-xs text-gray-200 px-3 py-1.5 rounded-xl border border-[#444746] focus:outline-none cursor-pointer">
-                            <option value="gemma4:e2b">Flash-Lite Extended (2B)</option>
-                            <option value="gemma4:e4b" selected>Flash Extended (4B)</option>
-                            <option value="gemma4:12b">Pro Extended (12B)</option>
-                        </select>
+                <!-- 3.5 Flash-Lite -->
+                <div onclick="selectModel('gemma4:e2b', '3.5 Flash-Lite')" class="model-option flex items-center justify-between p-3 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-white flex items-center space-x-2">
+                            <span>3.5 Flash-Lite</span>
+                        </span>
+                        <span class="text-xs text-gray-400">Fastest answers</span>
                     </div>
+                    <span id="check-gemma4:e2b" class="text-white text-sm">✓</span>
+                </div>
 
-                    <!-- Actions -->
-                    <div class="flex items-center space-x-2">
-                        <button id="sendBtn" class="bg-white hover:bg-gray-200 text-black p-2 rounded-full transition disabled:opacity-40">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </button>
+                <!-- 3.6 Flash -->
+                <div onclick="selectModel('gemma4:e4b', '3.6 Flash')" class="model-option flex items-center justify-between p-3 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-300">3.6 Flash</span>
+                        <span class="text-xs text-gray-500">Balanced performance</span>
                     </div>
+                    <span id="check-gemma4:e4b" class="text-transparent text-sm">✓</span>
+                </div>
+
+                <!-- 3.1 Pro -->
+                <div onclick="selectModel('gemma4:12b', '3.1 Pro')" class="model-option flex items-center justify-between p-3 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-gray-300">3.1 Pro</span>
+                        <span class="text-xs text-gray-500">Advanced reasoning</span>
+                    </div>
+                    <span id="check-gemma4:12b" class="text-transparent text-sm">✓</span>
+                </div>
+
+                <div class="border-t border-[#333538] my-1"></div>
+
+                <!-- Extended Thinking Toggle -->
+                <div onclick="toggleThinking()" class="flex items-center justify-between p-3 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium text-white">Extended thinking</span>
+                        <span class="text-xs text-gray-400">Complex problem solving</span>
+                    </div>
+                    <span id="thinkingCheck" class="text-white text-sm">✓</span>
+                </div>
+            </div>
+
+            <!-- Input Box -->
+            <div class="bg-[#1E1F20] rounded-3xl px-4 py-3 border border-[#333538] flex items-center justify-between shadow-lg">
+                <div class="flex items-center space-x-3 flex-1">
+                    <button class="text-gray-400 hover:text-white text-xl font-light px-1 transition">+</button>
+                    <textarea id="userInput" rows="1" placeholder="Ask Gemini" class="bg-transparent text-white focus:outline-none resize-none text-sm w-full max-h-32"></textarea>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <!-- Model Selector Trigger Badge -->
+                    <button id="modelBadgeBtn" onclick="toggleDropdown(event)" class="flex items-center space-x-1.5 bg-[#2B2D31] hover:bg-[#37393e] text-xs text-gray-300 px-3 py-1.5 rounded-full border border-[#444746] transition cursor-pointer">
+                        <span id="currentModelLabel">3.5 Flash-Lite</span>
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+
+                    <!-- Mic Button -->
+                    <button class="text-gray-400 hover:text-white transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                    </button>
                 </div>
             </div>
         </footer>
@@ -96,10 +140,45 @@
         const welcomeScreen = document.getElementById("welcomeScreen");
         const chatMessages = document.getElementById("chatMessages");
         const userInput = document.getElementById("userInput");
-        const sendBtn = document.getElementById("sendBtn");
-        const modelSelect = document.getElementById("modelSelect");
+        const modelDropdown = document.getElementById("modelDropdown");
+        const currentModelLabel = document.getElementById("currentModelLabel");
 
         let messages = [];
+        let selectedModel = "gemma4:e2b";
+        let extendedThinkingEnabled = true;
+
+        function toggleDropdown(e) {
+            e.stopPropagation();
+            modelDropdown.classList.toggle("hidden");
+        }
+
+        window.addEventListener("click", () => {
+            if (!modelDropdown.classList.contains("hidden")) {
+                modelDropdown.classList.add("hidden");
+            }
+        });
+
+        function selectModel(modelKey, labelName) {
+            selectedModel = modelKey;
+            currentModelLabel.textContent = labelName;
+            
+            // Update checkmarks in popup
+            document.querySelectorAll('[id^="check-gemma"]').forEach(el => el.classList.add("text-transparent"));
+            document.getElementById(`check-${modelKey}`).classList.remove("text-transparent");
+            document.getElementById(`check-${modelKey}`).classList.add("text-white");
+        }
+
+        function toggleThinking() {
+            extendedThinkingEnabled = !extendedThinkingEnabled;
+            const check = document.getElementById("thinkingCheck");
+            if (extendedThinkingEnabled) {
+                check.classList.remove("text-transparent");
+                check.classList.add("text-white");
+            } else {
+                check.classList.remove("text-white");
+                check.classList.add("text-transparent");
+            }
+        }
 
         function newChat() {
             messages = [];
@@ -113,17 +192,20 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            // Clear input box
             userInput.value = "";
             
-            // Switch layout state from welcome to active chat feed
-            if (welcomeScreen.classList.contains("hidden") === false) {
+            if (!welcomeScreen.classList.contains("hidden")) {
                 welcomeScreen.classList.add("hidden");
                 chatMessages.classList.remove("hidden");
                 workspace.classList.remove("justify-center");
             }
 
-            messages.push({ role: "user", content: text });
+            let promptText = text;
+            if (extendedThinkingEnabled) {
+                promptText = "[Extended Thinking Mode Active: Think deeply, analyze edge cases step-by-step before replying] " + text;
+            }
+
+            messages.push({ role: "user", content: promptText });
             appendMessage("user", text);
 
             const botBubble = appendMessage("assistant", "");
@@ -133,7 +215,7 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        model: modelSelect.value,
+                        model: selectedModel,
                         messages: messages,
                         stream: true
                     })
@@ -165,7 +247,7 @@
                 }
                 messages.push({ role: "assistant", content: fullText });
             } catch (err) {
-                botBubble.innerHTML = `<span class="text-red-400">Error: Ensure Ollama is running and CORS is active (${err.message}).</span>`;
+                botBubble.innerHTML = `<span class="text-red-400">Error: Ensure Ollama is running with CORS enabled (` + err.message + `).</span>`;
             }
         }
 
@@ -185,7 +267,6 @@
             return bubble;
         }
 
-        sendBtn.addEventListener("click", handleSend);
         userInput.addEventListener("keydown", (e) => {
             if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
