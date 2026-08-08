@@ -128,8 +128,8 @@
             <div id="plusDropdown" class="hidden absolute bottom-24 left-6 w-64 bg-[#1E1F20] border border-[#333538] rounded-2xl shadow-2xl p-2 z-50 flex flex-col space-y-1 text-sm text-gray-200">
                 <label class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                    <span>Upload files</span>
-                    <input type="file" class="hidden" onchange="handleFileUpload(event)">
+                    <span>Upload files (Max 10)</span>
+                    <input type="file" id="fileInput" class="hidden" multiple onchange="handleFilesSelection(event)">
                 </label>
                 <div onclick="alert('Drive integration selected')" class="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-[#2B2D31] cursor-pointer transition">
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
@@ -199,26 +199,31 @@
             </div>
 
             <!-- Input Box Container -->
-            <div class="bg-[#1E1F20] rounded-3xl px-4 py-3 border border-[#333538] flex items-center justify-between shadow-lg">
-                <div class="flex items-center space-x-3 flex-1">
-                    <button onclick="togglePlusDropdown(event)" class="text-gray-400 hover:text-white text-xl font-light px-1 transition cursor-pointer">+</button>
-                    <textarea id="userInput" rows="1" placeholder="Ask Gemma" class="bg-transparent text-white focus:outline-none resize-none text-sm w-full max-h-32"></textarea>
-                </div>
+            <div class="bg-[#1E1F20] rounded-3xl px-4 py-3 border border-[#333538] flex flex-col shadow-lg space-y-2">
+                <!-- Attached Files Preview Container -->
+                <div id="fileChipsContainer" class="flex flex-wrap gap-2 hidden"></div>
 
-                <div class="flex items-center space-x-3">
-                    <button id="modelBadgeBtn" onclick="toggleModelDropdown(event)" class="flex items-center space-x-1.5 bg-[#2B2D31] hover:bg-[#37393e] text-xs text-gray-300 px-3 py-1.5 rounded-full border border-[#444746] transition cursor-pointer">
-                        <span id="currentModelLabel">3.6 Flash</span>
-                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3 flex-1">
+                        <button onclick="togglePlusDropdown(event)" class="text-gray-400 hover:text-white text-xl font-light px-1 transition cursor-pointer">+</button>
+                        <textarea id="userInput" rows="1" placeholder="Ask Gemma" class="bg-transparent text-white focus:outline-none resize-none text-sm w-full max-h-32"></textarea>
+                    </div>
 
-                    <button class="text-gray-400 hover:text-white transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-                    </button>
+                    <div class="flex items-center space-x-3">
+                        <button id="modelBadgeBtn" onclick="toggleModelDropdown(event)" class="flex items-center space-x-1.5 bg-[#2B2D31] hover:bg-[#37393e] text-xs text-gray-300 px-3 py-1.5 rounded-full border border-[#444746] transition cursor-pointer">
+                            <span id="currentModelLabel">3.6 Flash</span>
+                            <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
 
-                    <!-- Send / Stop Button -->
-                    <button id="sendBtn" onclick="handleSendBtnClick()" class="bg-[#2B2D31] text-gray-400 p-2.5 rounded-full transition cursor-pointer flex items-center justify-center">
-                        <svg id="sendIcon" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
+                        <button class="text-gray-400 hover:text-white transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                        </button>
+
+                        <!-- Send / Stop Button -->
+                        <button id="sendBtn" onclick="handleSendBtnClick()" class="bg-[#2B2D31] text-gray-400 p-2.5 rounded-full transition cursor-pointer flex items-center justify-center">
+                            <svg id="sendIcon" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -244,13 +249,15 @@
         const sendIcon = document.getElementById("sendIcon");
         const userFooterContainer = document.getElementById("userFooterContainer");
         const recentChatsList = document.getElementById("recentChatsList");
+        const fileChipsContainer = document.getElementById("fileChipsContainer");
+        const fileInput = document.getElementById("fileInput");
 
         let userIp = "127.0.0.1";
         let googleUser = null;
         let chats = []; 
         let currentChatId = null;
+        let attachedFiles = []; 
 
-        // Default model set to Flash (3.6 Flash) with extended thinking disabled by default
         let selectedModel = "gemma4:e4b";
         let extendedThinkingEnabled = false;
         let isGenerating = false;
@@ -430,7 +437,7 @@
 
         userInput.addEventListener("input", () => {
             if (isGenerating) return;
-            const hasText = userInput.value.trim().length > 0;
+            const hasText = userInput.value.trim().length > 0 || attachedFiles.length > 0;
             if (hasText) {
                 sendBtn.classList.remove("bg-[#2B2D31]", "text-gray-400");
                 sendBtn.classList.add("bg-[#A8C7FA]", "text-black");
@@ -500,13 +507,55 @@
             currentModelLabel.textContent = baseName + (extendedThinkingEnabled ? " Extended" : "");
         }
 
-        function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                userInput.value = `[Attached File: ${file.name}] `;
-                plusDropdown.classList.add("hidden");
-                userInput.dispatchEvent(new Event('input'));
+        function handleFilesSelection(e) {
+            const files = Array.from(e.target.files);
+            plusDropdown.classList.add("hidden");
+
+            if (attachedFiles.length + files.length > 10) {
+                alert("You can upload a maximum of 10 files at a time.");
+                return;
             }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    attachedFiles.push({
+                        name: file.name,
+                        content: event.target.result
+                    });
+                    renderFileChips();
+                    userInput.dispatchEvent(new Event('input'));
+                };
+                reader.readAsText(file);
+            });
+
+            fileInput.value = "";
+        }
+
+        function removeAttachedFile(index) {
+            attachedFiles.splice(index, 1);
+            renderFileChips();
+            userInput.dispatchEvent(new Event('input'));
+        }
+
+        function renderFileChips() {
+            fileChipsContainer.innerHTML = "";
+            if (attachedFiles.length === 0) {
+                fileChipsContainer.classList.add("hidden");
+                return;
+            }
+            fileChipsContainer.classList.remove("hidden");
+
+            attachedFiles.forEach((file, index) => {
+                const chip = document.createElement("div");
+                chip.className = "flex items-center space-x-2 bg-[#2B2D31] border border-[#333538] text-xs text-gray-200 px-3 py-1.5 rounded-xl";
+                chip.innerHTML = `
+                    <svg class="w-3.5 h-3.5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span class="truncate max-w-[150px]">${file.name}</span>
+                    <button onclick="removeAttachedFile(${index})" class="text-gray-400 hover:text-white font-bold ml-1">×</button>
+                `;
+                fileChipsContainer.appendChild(chip);
+            });
         }
 
         function handleSendBtnClick() {
@@ -540,12 +589,22 @@
         }
 
         async function handleSend() {
-            const text = userInput.value.trim();
-            if (!text || isGenerating) return;
+            let text = userInput.value.trim();
+            if ((!text && attachedFiles.length === 0) || isGenerating) return;
+
+            let fullMessageContent = text;
+            if (attachedFiles.length > 0) {
+                const filesString = attachedFiles.map(f => `\n\n--- File: ${f.name} ---\n${f.content}`).join("");
+                fullMessageContent += filesString;
+            }
 
             userInput.value = "";
             userInput.dispatchEvent(new Event('input'));
             
+            const displayMessageText = text + (attachedFiles.length > 0 ? `\n[Attached ${attachedFiles.length} file(s)]` : "");
+            attachedFiles = [];
+            renderFileChips();
+
             if (!welcomeScreen.classList.contains("hidden")) {
                 welcomeScreen.classList.add("hidden");
                 chatMessages.classList.remove("hidden");
@@ -557,14 +616,14 @@
                 currentChatId = 'chat_' + Date.now();
                 currentChat = {
                     id: currentChatId,
-                    title: text.length > 28 ? text.substring(0, 28) + '...' : text,
+                    title: text.length > 28 ? text.substring(0, 28) + '...' : (text || 'File Analysis'),
                     messages: []
                 };
                 chats.unshift(currentChat);
             }
 
-            currentChat.messages.push({ role: "user", content: text });
-            appendUserMessageElement(text);
+            currentChat.messages.push({ role: "user", content: displayMessageText });
+            appendUserMessageElement(displayMessageText);
             saveData();
             renderRecentChats();
 
@@ -586,13 +645,20 @@
             startGeneratingState();
             abortController = new AbortController();
 
+            const apiMessages = currentChat.messages.map((m, idx) => {
+                if (idx === currentChat.messages.length - 1) {
+                    return { role: "user", content: fullMessageContent };
+                }
+                return { role: m.role, content: m.content };
+            });
+
             try {
                 const response = await fetch("http://localhost:11434/api/chat", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         model: selectedModel,
-                        messages: currentChat.messages.map(m => ({ role: m.role, content: m.content })),
+                        messages: apiMessages,
                         stream: true
                     }),
                     signal: abortController.signal
@@ -643,7 +709,7 @@
             const row = document.createElement("div");
             row.className = "flex w-full justify-end";
             const bubble = document.createElement("div");
-            bubble.className = "p-4 rounded-2xl max-w-[85%] text-sm leading-relaxed bg-[#2B2D31] text-white";
+            bubble.className = "p-4 rounded-2xl max-w-[85%] text-sm leading-relaxed bg-[#2B2D31] text-white whitespace-pre-wrap";
             bubble.textContent = text;
             row.appendChild(bubble);
             chatMessages.appendChild(row);
