@@ -170,7 +170,7 @@
                         <span id="check-gemma4:e4b" class="text-white text-sm">✓</span>
                         <div class="flex flex-col">
                             <span class="text-sm font-medium text-white">3.6 Flash</span>
-                            <span class="text-xs text-gray-400">Limit resets 9 Aug, 00:16</span>
+                            <span class="text-xs text-gray-400">Default fast model</span>
                         </div>
                     </div>
                 </div>
@@ -180,7 +180,7 @@
                         <span id="check-gemma4:12b" class="text-transparent text-sm">✓</span>
                         <div class="flex flex-col">
                             <span class="text-sm font-medium text-gray-300">3.1 Pro</span>
-                            <span class="text-xs text-gray-500">Limit resets 9 Aug, 00:16</span>
+                            <span class="text-xs text-gray-500">Advanced reasoning</span>
                         </div>
                     </div>
                 </div>
@@ -257,7 +257,6 @@
         let abortController = null;
         let sidebarOpen = true;
 
-        // Initialize User Session, IP, and saved conversations
         async function initUserSession() {
             try {
                 const res = await fetch("https://api.ipify.org?format=json");
@@ -310,7 +309,7 @@
         function initGoogleAuth() {
             if (typeof google !== 'undefined' && google.accounts) {
                 google.accounts.id.initialize({
-                    client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+                    client_id: "856315244874-t2rgvfh93r3fh3amo9qpmrie15jqgn6.apps.googleusercontent.com",
                     callback: handleCredentialResponse
                 });
                 if (!googleUser) {
@@ -495,7 +494,6 @@
                 check.classList.remove("text-white");
                 check.classList.add("text-transparent");
             }
-            const activeModelEl = document.querySelector('.model-option.border-white');
             let baseName = "3.6 Flash";
             if (selectedModel === 'gemma4:e2b') baseName = "3.5 Flash-Lite";
             if (selectedModel === 'gemma4:12b') baseName = "3.1 Pro";
